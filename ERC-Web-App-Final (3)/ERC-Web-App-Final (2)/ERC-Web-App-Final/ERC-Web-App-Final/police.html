@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Locate nearby police stations and alert authorities with Emergency Response.">
+  <title>Police | Emergency Response</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Emergency Navigation">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Emergency Response</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="ambulance.html">Ambulance</a></li>
+          <li class="nav-item"><a class="nav-link" href="police.html">Police</a></li>
+          <li class="nav-item"><a class="nav-link" href="other.html">Other Emergencies</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="signup.html">signup</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">login</a></li>
+          <li class="nav-item"><a class="nav-link" href="first-aid.html">Fitst Aid</a></li>
+          <li class="nav-item"><a class="nav-link" href="landing.html">Adimn login</a></li>
+          <li class="nav-item"><button id="logout-btn" class="btn btn-outline-light">Logout</button></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <style>
+    .btn-uniform {
+      width: 200px;
+      height: 60px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  
+  <main class="container py-4 text-center">
+    <h1 class="mb-4">🚓 Police</h1>
+  
+    <div id="mapid" class="mb-4" style="height: 300px;">
+      <!-- Leaflet map will render here -->
+    </div>
+  
+    <!-- Row 1: SOS, Nearby, Navigate -->
+    <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+      <button class="btn btn-danger btn-uniform" aria-label="SOS" id="sos-btn">
+        <i class="bi bi-exclamation-circle me-2"></i> SOS
+      </button>
+  
+      <button class="btn btn-info btn-uniform" aria-label="Nearby Police Station" id="nearby-police-btn">
+        <i class="bi bi-flag me-2"></i> Nearby
+      </button>
+  
+      <button class="btn btn-danger btn-uniform" aria-label="Navigate to Police Station" id="navigate-btn">
+        <i class="bi bi-compass me-2"></i> Navigate
+      </button>
+    </div>
+  
+    <!-- Row 2: Video, Audio, Message -->
+    <div class="d-flex justify-content-center flex-wrap gap-3">
+      <button class="btn btn-primary btn-uniform" aria-label="Video Call" id="video-call-btn">
+        <i class="bi bi-camera-video me-2"></i> Video Call
+      </button>
+  
+      <button class="btn btn-success btn-uniform" aria-label="Audio Call" id="audio-call-btn">
+        <i class="bi bi-telephone me-2"></i> Audio Call
+      </button>
+  
+      <button class="btn btn-warning btn-uniform" aria-label="Message" id="message-btn">
+        <i class="bi bi-chat-dots me-2"></i> Message
+      </button>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="footer bg-dark text-center text-white py-3">
+    <p>© 2025 Emergency Response. All rights reserved.</p>
+    <button id="toggle-theme" class="btn btn-light">Toggle Dark Mode</button>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="js/police.js"></script>
+  <script>
+    // Handle SOS button press for Police
+    document.getElementById('sos-btn').addEventListener('click', function() {
+      logSOSButtonPress('Police');
+    });
+    
+    // Function to log SOS button press in localStorage
+    function logSOSButtonPress(emergencyType) {
+      const currentUser = localStorage.getItem('currentUser');
+      const users = JSON.parse(localStorage.getItem('users')) || {};
+      const user = users[currentUser];
+
+      if (user) {
+        // Collect SOS log details
+        const log = {
+          name: user.name,
+          phone: currentUser,
+          type: emergencyType,
+          time: new Date().toLocaleString()
+        };
+
+        // Retrieve existing logs from localStorage
+        const allLogs = JSON.parse(localStorage.getItem('sosLogs')) || {};
+        const userLogs = allLogs[currentUser] || [];
+
+        // Add the new log
+        userLogs.push(log);
+
+        // Save the updated logs back to localStorage
+        allLogs[currentUser] = userLogs;
+        localStorage.setItem('sosLogs', JSON.stringify(allLogs));
+
+        // Optionally, alert user or provide feedback
+        alert(`${emergencyType} SOS button pressed!`);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!-- emergency.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-10">
+
+  <div class="text-center">
+    <button id="sos-btn" class="bg-red-500 text-white p-5 rounded-full text-xl">SOS</button>
+  </div>
+
+  <script>
+    // Handle SOS Button Press
+    document.getElementById('sos-btn').addEventListener('click', function() {
+      const phone = '1234567890';  // Example phone number (you can replace this with actual data)
+      const location = 'Somewhere, Earth'; // You can get actual location here
+
+      // Send SOS data to the server
+      fetch('http://localhost:5000/api/sos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone, location }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('SOS request sent successfully!');
+      })
+      .catch(err => {
+        console.error('Error sending SOS data:', err);
+        alert('Failed to send SOS request.');
+      });
+    });
+  </script>
+
+</body>
+</html>

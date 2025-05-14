@@ -1,0 +1,4 @@
+body { font-family: Arial; padding: 20px; background: #f8f8f8; }
+#login-form, #dashboard { max-width: 500px; margin: auto; }
+input, button { display: block; width: 100%; margin: 10px 0; padding: 10px; }
+table { width: 100%; background: white; margin-top: 20px; }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View and edit your Emergency Response profile settings." />
+  <title>Profile | Emergency Response</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="bg-light">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Emergency Response</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="ambulance.html">Ambulance</a></li>
+          <li class="nav-item"><a class="nav-link" href="police.html">Police</a></li>
+          <li class="nav-item"><a class="nav-link" href="other.html">Other Emergencies</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="signup.html">signup</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">login</a></li>
+          <li class="nav-item"><a class="nav-link" href="first-aid.html">Fitst Aid</a></li>
+          <li class="nav-item"><a class="nav-link" href="landing.html">Adimn login</a></li>
+          <li class="nav-item"><button id="logout-btn" class="btn btn-outline-light">Logout</button></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container py-4">
+    <h1 class="mb-4">👤 Profile</h1>
+    <div class="mb-3">
+      <p><strong>Name:</strong> <span id="user-name">[Name]</span></p>
+      <p><strong>Phone:</strong> <span id="user-phone">[Phone]</span></p>
+    </div>
+
+
+    <h4>Your Emergency History:</h4>
+    <ul class="list-group" id="sos-logs">
+      <li class="list-group-item text-muted">No data yet...</li>
+    </ul>
+
+    
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-center text-white py-3 mt-5">
+    <p>© 2025 Emergency Response. All rights reserved.</p>
+    <button id="toggle-theme" class="btn btn-light">Toggle Dark Mode</button>
+  </footer>
+
+  <div id="user-log-container"></div>
+
+  <div id="user-logs" class="p-4"></div>
+
+  <script>
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        db.collection("emergency_logs")
+          .where("userID", "==", user.uid)
+          .orderBy("timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            const logsDiv = document.getElementById("user-logs");
+            logsDiv.innerHTML = "<h3>Your Emergency Actions:</h3>";
+            snapshot.forEach((doc) => {
+              const log = doc.data();
+              logsDiv.innerHTML += `
+                <div class="border p-2 mt-2 rounded bg-blue-100">
+                  <strong>${log.buttonType}</strong><br>
+                  <small>${new Date(log.timestamp).toLocaleString()}</small><br>
+                  📍 Location: (${log.location.lat.toFixed(5)}, ${log.location.lng.toFixed(5)})
+                </div>
+              `;
+            });
+          });
+      }
+    });
+  </script>
+  
+</script>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

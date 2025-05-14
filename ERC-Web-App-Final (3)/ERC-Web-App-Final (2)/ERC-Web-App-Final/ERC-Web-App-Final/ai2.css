@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #f8f9fb;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  background: #1e88e5;
+  color: white;
+  padding-bottom: 3rem;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+.logo span {
+  color: #ffd600;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.hero {
+  text-align: center;
+  margin-top: 2rem;
+}
+.hero h1 {
+  font-size: 2.5rem;
+}
+.hero p {
+  margin: 1rem 0;
+}
+.btn {
+  background: #ffd600;
+  color: #1e88e5;
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s ease;
+}
+.btn:hover {
+  background: #ffc400;
+}
+
+.features {
+  padding: 3rem 2rem;
+  background: white;
+  text-align: center;
+}
+.features h2 {
+  margin-bottom: 2rem;
+}
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.card {
+  background: #f0f0f0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  max-width: 300px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.predict {
+  padding: 3rem 2rem;
+  background: #e3f2fd;
+  text-align: center;
+}
+.predict form {
+  margin-top: 1rem;
+}
+.predict input {
+  padding: 0.7rem;
+  width: 300px;
+  max-width: 90%;
+  margin-right: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.predict button {
+  padding: 0.7rem 1.5rem;
+  background: #1e88e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.predict button:hover {
+  background: #1565c0;
+}
+
+.result {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.hidden {
+  display: none;
+}
+
+footer {
+  background: #1e88e5;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 1rem;
+  margin-top: 3rem;
+}

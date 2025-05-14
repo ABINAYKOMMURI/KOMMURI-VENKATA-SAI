@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Emergency Response web app provides quick access to SOS emergency services (ambulance, police, and more).">
+  <title>Home | Emergency Response</title>
+  <!-- Bootstrap 5 CSS (via CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Leaflet CSS (for maps) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Web App Manifest for PWA -->
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Emergency Navigation">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Emergency Response</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="ambulance.html">Ambulance</a></li>
+          <li class="nav-item"><a class="nav-link" href="police.html">Police</a></li>
+          <li class="nav-item"><a class="nav-link" href="other.html">Other Emergencies</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="signup.html">signup</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">login</a></li>
+          <li class="nav-item"><a class="nav-link" href="first-aid.html">Fitst Aid</a></li>
+          <li class="nav-item"><a class="nav-link" href="landing.html">Adimn login</a></li>
+          <li class="nav-item"><button id="logout-btn" class="btn btn-outline-light">Logout</button></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with SOS Button -->
+  <header class="hero text-center py-5">
+    <div class="container">
+      <h1 class="display-4">Emergency SOS</h1>
+      <p class="lead mb-4">Tap the SOS button in case of emergency</p>
+      <button id="sos-btn" class="btn btn-danger btn-lg sos-animated" aria-label="Send emergency alert">SOS</button>
+    </div>
+  </header>
+
+  <!-- Map Section (Leaflet.js Placeholder) -->
+  <section id="map" class="map-section mb-5">
+    <div id="mapid" style="height: 300px;">
+      <!-- Leaflet map will render here -->
+    </div>
+  </section>
+
+
+  <!-- Scripts -->
+  <!-- Bootstrap Bundle (includes Popper for dropdowns/nav toggling) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet JS (map support) -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Main JavaScript (login check, logout, SOS, map) -->
+  <script src="js/main.js"></script>
+  <!-- Dark Mode toggle script -->
+  <script src="js/theme.js"></script>
+  <script>
+    // Handle SOS button press for Police
+    document.getElementById('sos-btn').addEventListener('click', function() {
+      logSOSButtonPress('Home');
+    });
+    
+    // Function to log SOS button press in localStorage
+    function logSOSButtonPress(emergencyType) {
+      const currentUser = localStorage.getItem('currentUser');
+      const users = JSON.parse(localStorage.getItem('users')) || {};
+      const user = users[currentUser];
+
+      if (user) {
+        // Collect SOS log details
+        const log = {
+          name: user.name,
+          phone: currentUser,
+          type: emergencyType,
+          time: new Date().toLocaleString()
+        };
+
+        // Retrieve existing logs from localStorage
+        const allLogs = JSON.parse(localStorage.getItem('sosLogs')) || {};
+        const userLogs = allLogs[currentUser] || [];
+
+        // Add the new log
+        userLogs.push(log);
+
+        // Save the updated logs back to localStorage
+        allLogs[currentUser] = userLogs;
+        localStorage.setItem('sosLogs', JSON.stringify(allLogs));
+
+        // Optionally, alert user or provide feedback
+        alert(`${emergencyType} SOS button pressed!`);
+      }
+    }
+  </script>
+</body>
+</html>

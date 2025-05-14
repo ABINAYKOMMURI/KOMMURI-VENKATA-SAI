@@ -1,0 +1,69 @@
+/* styles.css */
+
+body {
+  background: linear-gradient(to bottom right, #C0392B, #000000); /* Mid Red to Black */
+  color: #fff;
+  min-height: 100vh;
+}
+
+.navbar, .footer {
+  background: linear-gradient(to right, #C0392B, #000000); /* Navbar and footer gradient */
+}
+
+.btn-danger {
+  background-color: #E74C3C; /* Medium Red */
+  border-color: #C0392B;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #FF4C4C; /* Brighter Red on hover */
+  border-color: #C0392B;
+}
+
+.btn-primary,
+.btn-success,
+.btn-warning,
+.btn-info {
+  background-color: #C0392B;
+  border-color: #922B21;
+  color: #fff;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-warning:hover,
+.btn-info:hover {
+  background-color: #A93226;
+  border-color: #922B21;
+}
+
+/* Optional: Adjust header and text styles */
+.hero {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4rem 1rem;
+  border-radius: 10px;
+}
+
+h1, h2, h3, h4 {
+  color: #FF6F61; /* Softer Light Red for headings */
+}
+
+/* Modal Custom Styles (Optional) */
+.modal-dialog {
+  max-width: 50px;
+}
+
+.logo-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
+
+.logo {
+  height: 3cm;
+  width: 3cm;
+  vertical-align: middle;
+  background-color: #C0392B; /* Mid Red background for logo */
+}

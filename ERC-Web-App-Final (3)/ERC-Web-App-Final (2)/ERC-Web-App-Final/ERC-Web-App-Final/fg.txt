@@ -1,0 +1,741 @@
+import { useState, useEffect } from 'react';
+import { Button } from "/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "/components/ui/card";
+import { Input } from "/components/ui/input";
+import { Label } from "/components/ui/label";
+import { 
+  Home, Shield, Users, User, Plus, Phone, Video, MapPin, 
+  AlertTriangle, HeartPulse, Languages, Download, BookOpen, Eye, EyeOff
+} from "lucide-react";
+
+// Enhanced SVG Logo Component
+function ERCLogo({ className = "" }: { className?: string }) {
+  return (
+    <svg 
+      className={`${className}`}
+      viewBox="0 0 100 100" 
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Emergency Response Connect Logo"
+    >
+      <path 
+        d="M50 5L10 25V60C10 80 50 95 50 95C50 95 90 80 90 60V25L50 5Z" 
+        fill="url(#shieldGradient)" 
+        stroke="#ffffff" 
+        strokeWidth="3"
+      />
+      <path d="M20 15L30 20M80 15L70 20" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M25 80L35 75M75 80L65 75" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="50" cy="50" r="30" fill="#1e40af" />
+      <path 
+        d="M50 42C45 37 35 37 30 42C25 47 25 55 30 60L50 75L70 60C75 55 75 47 70 42C65 37 55 37 50 42Z" 
+        fill="#ffffff"
+      />
+      <path 
+        d="M35 65L45 60L55 70L65 60L75 65" 
+        stroke="#ef4444" 
+        strokeWidth="3" 
+        strokeLinecap="round"
+        fill="none"
+      />
+      <circle cx="20" cy="30" r="2" fill="#ffffff" />
+      <circle cx="80" cy="30" r="2" fill="#ffffff" />
+      <circle cx="25" cy="70" r="2" fill="#ffffff" />
+      <circle cx="75" cy="70" r="2" fill="#ffffff" />
+      <defs>
+        <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ef4444" />
+          <stop offset="100%" stopColor="#7c3aed" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+// Security utilities
+const securityUtils = {
+  encryptData: (data: string): string => {
+    // In a real app, use proper encryption like Web Crypto API
+    return btoa(unescape(encodeURIComponent(data)));
+  },
+  decryptData: (encryptedData: string): string => {
+    // In a real app, use proper decryption
+    return decodeURIComponent(escape(atob(encryptedData)));
+  }
+};
+
+export default function EmergencyApp() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [isSosActive, setIsSosActive] = useState(false);
+  const [childLockEnabled, setChildLockEnabled] = useState(false);
+  const [emergencyHistory, setEmergencyHistory] = useState<Array<{
+    timestamp: Date;
+    location: [number, number] | null;
+    type: string;
+  }>>([]);
+  const [activeTab, setActiveTab] = useState('home');
+  const [selectedEmergency, setSelectedEmergency] = useState<'medical' | 'police' | 'fire' | null>(null);
+  const [offlineReady, setOfflineReady] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [language, setLanguage] = useState<'en' | 'es'>('en');
+
+  // Get user location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location = [position.coords.latitude, position.coords.longitude] as [number, number];
+          setUserLocation(location);
+          // Encrypt location data for security
+          const encryptedLocation = securityUtils.encryptData(JSON.stringify(location));
+          localStorage.setItem('userLocation', encryptedLocation);
+        },
+        () => {
+          const defaultLocation = [37.7749, -122.4194] as [number, number]; // Default to San Francisco
+          setUserLocation(defaultLocation);
+          console.log("Location access denied - using default coordinates");
+        }
+      );
+    }
+  }, []);
+
+  const triggerEmergency = (type: string = 'general') => {
+    if (childLockEnabled) {
+      alert("Child lock is enabled. Disable in settings to use SOS.");
+      return;
+    }
+
+    setIsSosActive(true);
+    
+    // Log emergency event with encrypted data
+    const newEmergency = {
+      timestamp: new Date(),
+      location: userLocation,
+      type
+    };
+    const encryptedHistory = securityUtils.encryptData(JSON.stringify([...emergencyHistory, newEmergency]));
+    localStorage.setItem('emergencyHistory', encryptedHistory);
+    setEmergencyHistory([...emergencyHistory, newEmergency]);
+    
+    // Emergency contacts based on type
+    const emergencyContacts = {
+      medical: ["112", "911"],
+      police: ["911"],
+      fire: ["911", "112"],
+      general: ["112", "911"]
+    };
+
+    const contacts = emergencyContacts[type as keyof typeof emergencyContacts] || emergencyContacts.general;
+    const message = `EMERGENCY ALERT! ${type.toUpperCase()}!\nLocation: ${userLocation?.[0]?.toFixed(5)}, ${userLocation?.[1]?.toFixed(5)}\nTimestamp: ${new Date().toLocaleString()}`;
+    
+    // Try to open emergency communication channels
+    if (navigator.onLine) {
+      // Online - use WhatsApp and direct call
+      contacts.forEach(contact => {
+        window.open(`https://wa.me/${contact}?text=${encodeURIComponent(message)}`, '_blank');
+      });
+      window.location.href = `tel:${contacts[0]}`;
+    } else {
+      // Offline - show emergency info
+      alert(`OFFLINE EMERGENCY MODE\nCall: ${contacts.join(', ')}\n${message}`);
+    }
+    
+    setTimeout(() => setIsSosActive(false), 3000);
+  };
+
+  const changeLanguage = (lng: 'en' | 'es') => {
+    setLanguage(lng);
+    localStorage.setItem('preferredLanguage', lng);
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 p-4">
+        <Card className="w-full max-w-md border-0 bg-gray-800 text-white">
+          <CardHeader className="items-center">
+            <ERCLogo className="w-24 h-24 mb-4" />
+            <CardTitle className="text-2xl text-center">
+              Emergency Response Connect
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {authMode === 'login' ? (
+              <LoginForm 
+                onSubmit={() => setIsAuthenticated(true)}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+              />
+            ) : (
+              <SignupForm 
+                onSubmit={() => setIsAuthenticated(true)}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                showConfirmPassword={showConfirmPassword}
+                setShowConfirmPassword={setShowConfirmPassword}
+              />
+            )}
+            
+            <div className="mt-4 text-center text-sm text-gray-300">
+              <button 
+                onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+                className="text-blue-400 hover:underline"
+              >
+                {authMode === 'login' ? 'Need an account? Sign up' : 'Already have an account? Log in'}
+              </button>
+            </div>
+            
+            <Button 
+              onClick={() => setIsAuthenticated(true)}
+              variant="destructive" 
+              className="w-full mt-6 bg-red-600 hover:bg-red-700"
+            >
+              <AlertTriangle className="mr-2 h-4 w-4" />
+              Emergency Bypass
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
+      <header className="flex items-center justify-between p-4 bg-gray-800 border-b border-gray-700">
+        <div className="flex items-center">
+          <ERCLogo className="w-10 h-10 mr-3" />
+          <h1 className="text-xl font-bold bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
+            ERC
+          </h1>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button 
+            onClick={() => changeLanguage('en')} 
+            variant={language === 'en' ? 'default' : 'outline'} 
+            size="sm"
+            aria-label="English language"
+          >
+            EN
+          </Button>
+          <Button 
+            onClick={() => changeLanguage('es')} 
+            variant={language === 'es' ? 'default' : 'outline'} 
+            size="sm"
+            aria-label="Spanish language"
+          >
+            ES
+          </Button>
+        </div>
+      </header>
+
+      <main className="flex-1 p-4 pb-20">
+        {activeTab === 'home' && (
+          <div className="space-y-8">
+            <div className="flex justify-center">
+              <button
+                onClick={() => triggerEmergency()}
+                className={`relative w-32 h-32 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg transition-all duration-300 ${
+                  isSosActive 
+                    ? 'bg-red-700 scale-110 animate-pulse ring-4 ring-red-400' 
+                    : 'bg-gradient-to-br from-red-600 to-red-800 hover:scale-105'
+                }`}
+                aria-label="SOS Emergency Button"
+              >
+                SOS
+                {isSosActive && (
+                  <div className="absolute inset-0 rounded-full bg-red-600 animate-ping opacity-75"></div>
+                )}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Button 
+                onClick={() => {
+                  setActiveTab('medical');
+                  triggerEmergency('medical');
+                }}
+                className="h-24 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-transform hover:scale-105"
+                aria-label="Medical Emergency"
+              >
+                <div className="flex flex-col items-center">
+                  <Plus className="h-6 w-6 mb-2 text-red-400" />
+                  <span>Medical</span>
+                </div>
+              </Button>
+              <Button 
+                onClick={() => {
+                  setActiveTab('police');
+                  triggerEmergency('police');
+                }}
+                className="h-24 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-transform hover:scale-105"
+                aria-label="Police Emergency"
+              >
+                <div className="flex flex-col items-center">
+                  <Shield className="h-6 w-6 mb-2 text-blue-400" />
+                  <span>Police</span>
+                </div>
+              </Button>
+              <Button 
+                onClick={() => triggerEmergency('fire')}
+                className="h-24 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-transform hover:scale-105"
+                aria-label="Fire Emergency"
+              >
+                <div className="flex flex-col items-center">
+                  <AlertTriangle className="h-6 w-6 mb-2 text-orange-400" />
+                  <span>Fire</span>
+                </div>
+              </Button>
+              <Button 
+                onClick={() => setActiveTab('other')}
+                className="h-24 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-transform hover:scale-105"
+                aria-label="Other Emergencies"
+              >
+                <div className="flex flex-col items-center">
+                  <Users className="h-6 w-6 mb-2 text-purple-400" />
+                  <span>Other</span>
+                </div>
+              </Button>
+            </div>
+
+            <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
+              <div className="flex items-center">
+                <MapPin className="h-5 w-5 mr-2 text-blue-400" />
+                <span>
+                  {userLocation 
+                    ? `Location: ${userLocation[0].toFixed(4)}, ${userLocation[1].toFixed(4)}` 
+                    : "Location unavailable"}
+                </span>
+              </div>
+            </div>
+
+            <Card className="bg-gray-800 border-gray-700">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <BookOpen className="h-5 w-5 mr-2 text-yellow-400" />
+                  Emergency Resources
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Button variant="link" className="text-blue-400 hover:underline text-left">
+                  First Aid Guide
+                </Button>
+                <Button variant="link" className="text-blue-400 hover:underline text-left">
+                  Disaster Preparedness
+                </Button>
+                <Button variant="link" className="text-blue-400 hover:underline text-left">
+                  Safety Checklist
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'medical' && <MedicalPage />}
+        {activeTab === 'police' && <PolicePage />}
+        {activeTab === 'other' && <OtherEmergencyPage onEmergencySelect={triggerEmergency} />}
+        {activeTab === 'profile' && (
+          <ProfilePage 
+            childLockEnabled={childLockEnabled}
+            onToggleChildLock={() => setChildLockEnabled(!childLockEnabled)}
+            emergencyHistory={emergencyHistory}
+          />
+        )}
+      </main>
+
+      <nav className="fixed bottom-0 w-full bg-gray-800 border-t border-gray-700">
+        <div className="flex justify-around p-2">
+          <button 
+            onClick={() => setActiveTab('home')}
+            className={`flex flex-col items-center p-2 ${activeTab === 'home' ? 'text-blue-400' : 'text-gray-400'}`}
+            aria-label="Home"
+          >
+            <Home className="h-6 w-6" />
+            <span className="text-xs mt-1">Home</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('medical')}
+            className={`flex flex-col items-center p-2 ${activeTab === 'medical' ? 'text-red-400' : 'text-gray-400'}`}
+            aria-label="Medical"
+          >
+            <Plus className="h-6 w-6" />
+            <span className="text-xs mt-1">Medical</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('police')}
+            className={`flex flex-col items-center p-2 ${activeTab === 'police' ? 'text-blue-400' : 'text-gray-400'}`}
+            aria-label="Police"
+          >
+            <Shield className="h-6 w-6" />
+            <span className="text-xs mt-1">Police</span>
+          </button>
+          <button 
+            onClick={() => setActiveTab('profile')}
+            className={`flex flex-col items-center p-2 ${activeTab === 'profile' ? 'text-purple-400' : 'text-gray-400'}`}
+            aria-label="Profile"
+          >
+            <User className="h-6 w-6" />
+            <span className="text-xs mt-1">Profile</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  );
+}
+
+function LoginForm({ 
+  onSubmit,
+  showPassword,
+  setShowPassword
+}: { 
+  onSubmit: () => void;
+  showPassword: boolean;
+  setShowPassword: (value: boolean) => void;
+}) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-4">
+      <div className="space-y-2">
+        <Label className="text-gray-300">Email</Label>
+        <Input 
+          type="email" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="bg-gray-700 border-gray-600 text-white"
+          required
+          aria-required="true"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label className="text-gray-300">Password</Label>
+        <div className="relative">
+          <Input 
+            type={showPassword ? "text" : "password"} 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-gray-700 border-gray-600 text-white w-full pr-10"
+            required
+            aria-required="true"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-3 text-gray-400 hover:text-white"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+        Login
+      </Button>
+    </form>
+  );
+}
+
+function SignupForm({ 
+  onSubmit,
+  showPassword,
+  setShowPassword,
+  showConfirmPassword,
+  setShowConfirmPassword
+}: { 
+  onSubmit: () => void;
+  showPassword: boolean;
+  setShowPassword: (value: boolean) => void;
+  showConfirmPassword: boolean;
+  setShowConfirmPassword: (value: boolean) => void;
+}) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }} className="space-y-4">
+      <div className="space-y-2">
+        <Label className="text-gray-300">Email</Label>
+        <Input 
+          type="email" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="bg-gray-700 border-gray-600 text-white"
+          required
+          aria-required="true"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label className="text-gray-300">Password</Label>
+        <div className="relative">
+          <Input 
+            type={showPassword ? "text" : "password"} 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-gray-700 border-gray-600 text-white w-full pr-10"
+            required
+            aria-required="true"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-3 text-gray-400 hover:text-white"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Label className="text-gray-300">Confirm Password</Label>
+        <div className="relative">
+          <Input 
+            type={showConfirmPassword ? "text" : "password"} 
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="bg-gray-700 border-gray-600 text-white w-full pr-10"
+            required
+            aria-required="true"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-3 text-gray-400 hover:text-white"
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+          >
+            {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
+      </div>
+      <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+        Create Account
+      </Button>
+    </form>
+  );
+}
+
+function MedicalPage() {
+  const [nearbyHospitals, setNearbyHospitals] = useState<Array<{
+    name: string;
+    distance: string;
+    phone: string;
+  }>>([]);
+
+  useEffect(() => {
+    // In a real app, this would fetch from a healthcare API
+    const mockHospitals = [
+      { name: "City General Hospital", distance: "0.5 km", phone: "+1 234-567-8901" },
+      { name: "Regional Medical Center", distance: "1.2 km", phone: "+1 234-567-8902" },
+      { name: "Urgent Care Clinic", distance: "0.8 km", phone: "+1 234-567-8903" }
+    ];
+    setNearbyHospitals(mockHospitals);
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Medical Emergency</h1>
+      
+      <div className="bg-gray-800 rounded-lg h-64 flex items-center justify-center border border-red-500/50">
+        <div className="text-center">
+          <HeartPulse className="h-12 w-12 mx-auto text-red-400 mb-4" />
+          <p className="text-gray-400">Nearby hospitals and medical centers</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-3">
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          <Video className="h-5 w-5 mr-2" /> Video
+        </Button>
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          <Phone className="h-5 w-5 mr-2" /> Call
+        </Button>
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          Message
+        </Button>
+      </div>
+      
+      <div className="space-y-3">
+        <h3 className="font-semibold">Nearby Hospitals</h3>
+        {nearbyHospitals.map((hospital, index) => (
+          <div key={index} className="p-3 bg-gray-800 rounded border border-gray-700">
+            <div className="font-medium">{hospital.name}</div>
+            <div className="text-sm text-gray-400">{hospital.distance} away</div>
+            <div className="text-sm text-blue-400 mt-1">{hospital.phone}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PolicePage() {
+  const [nearbyStations, setNearbyStations] = useState<Array<{
+    name: string;
+    distance: string;
+    phone: string;
+  }>>([]);
+
+  useEffect(() => {
+    // In a real app, this would fetch from a law enforcement API
+    const mockStations = [
+      { name: "Downtown Precinct", distance: "0.7 km", phone: "+1 234-567-8911" },
+      { name: "Central Police Station", distance: "1.5 km", phone: "+1 234-567-8912" },
+      { name: "Highway Patrol", distance: "2.1 km", phone: "+1 234-567-8913" }
+    ];
+    setNearbyStations(mockStations);
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Police Emergency</h1>
+      
+      <div className="bg-gray-800 rounded-lg h-64 flex items-center justify-center border border-blue-500/50">
+        <div className="text-center">
+          <Shield className="h-12 w-12 mx-auto text-blue-400 mb-4" />
+          <p className="text-gray-400">Nearby police stations and help centers</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-3">
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          <Video className="h-5 w-5 mr-2" /> Video
+        </Button>
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          <Phone className="h-5 w-5 mr-2" /> Call
+        </Button>
+        <Button className="bg-gray-800 hover:bg-gray-700 border border-gray-700 h-20">
+          Message
+        </Button>
+      </div>
+      
+      <div className="space-y-3">
+        <h3 className="font-semibold">Nearby Stations</h3>
+        {nearbyStations.map((station, index) => (
+          <div key={index} className="p-3 bg-gray-800 rounded border border-gray-700">
+            <div className="font-medium">{station.name}</div>
+            <div className="text-sm text-gray-400">{station.distance} away</div>
+            <div className="text-sm text-blue-400 mt-1">{station.phone}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function OtherEmergencyPage({ onEmergencySelect }: { onEmergencySelect: (type: string) => void }) {
+  const emergencies = [
+    { name: 'Fire', icon: <AlertTriangle className="text-orange-400" />, type: 'fire' },
+    { name: 'Natural Disaster', icon: <AlertTriangle className="text-yellow-400" />, type: 'natural_disaster' },
+    { name: 'Domestic Violence', icon: <Shield className="text-purple-400" />, type: 'domestic_violence' },
+    { name: 'Mental Health', icon: <HeartPulse className="text-green-400" />, type: 'mental_health' },
+    { name: 'Poison Control', icon: <AlertTriangle className="text-red-400" />, type: 'poison_control' },
+    { name: 'Child Emergency', icon: <User className="text-blue-400" />, type: 'child_emergency' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Other Emergency Services</h1>
+      <div className="grid grid-cols-2 gap-4">
+        {emergencies.map((emergency) => (
+          <Button 
+            key={emergency.name} 
+            onClick={() => onEmergencySelect(emergency.type)}
+            className="h-24 bg-gray-800 hover:bg-gray-700 border border-gray-700 transition-transform hover:scale-105"
+            aria-label={emergency.name}
+          >
+            <div className="flex flex-col items-center">
+              {emergency.icon}
+              <span className="mt-2">{emergency.name}</span>
+            </div>
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProfilePage({ 
+  childLockEnabled,
+  onToggleChildLock,
+  emergencyHistory
+}: {
+  childLockEnabled: boolean;
+  onToggleChildLock: () => void;
+  emergencyHistory: Array<{
+    timestamp: Date;
+    location: [number, number] | null;
+    type: string;
+  }>;
+}) {
+  return (
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Your Profile</h1>
+      
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle>Account Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label className="text-gray-300">Child Lock (SOS Protection)</Label>
+            <button
+              onClick={onToggleChildLock}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                childLockEnabled ? 'bg-red-600' : 'bg-gray-600'
+              }`}
+              aria-label={childLockEnabled ? "Disable child lock" : "Enable child lock"}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  childLockEnabled ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+          
+          <div className="space-y-2">
+            <Label className="text-gray-300">Emergency Contacts</Label>
+            <Input 
+              value="+1 (555) 123-4567" 
+              className="bg-gray-700 border-gray-600 text-white"
+              readOnly
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Emergency History */}
+      <Card className="bg-gray-800 border-gray-700">
+        <CardHeader>
+          <CardTitle>Emergency History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {emergencyHistory.length === 0 ? (
+            <p className="text-gray-400">No emergency alerts recorded</p>
+          ) : (
+            <div className="space-y-3">
+              {emergencyHistory.map((emergency, index) => (
+                <div key={index} className="p-3 bg-gray-700 rounded border border-gray-600">
+                  <div className="font-medium capitalize">{emergency.type.replace('_', ' ')}</div>
+                  <div className="text-sm text-gray-400">
+                    {new Date(emergency.timestamp).toLocaleString()}
+                  </div>
+                  {emergency.location && (
+                    <div className="text-xs text-gray-400 mt-1">
+                      Location: {emergency.location[0].toFixed(4)}, {emergency.location[1].toFixed(4)}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+      
+      <Button variant="destructive" className="w-full">
+        Log Out
+      </Button>
+    </div>
+  );
+}

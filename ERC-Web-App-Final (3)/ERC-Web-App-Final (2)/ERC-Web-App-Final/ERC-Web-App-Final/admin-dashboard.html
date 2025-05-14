@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="View and edit your Emergency Response profile settings." />
+  <title>admin-Dasahboard| Emergency Response</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.2/firebase-firestore.js"></script>
+</head>
+<body class="bg-light">
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Emergency Response</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h4>Emergency of user</h4>
+    <ul class="list-group" id="sos-logs">
+      <li class="list-group-item text-muted">No data yet...</li>
+    </ul>
+
+    <div id="user-log-container"></div>
+
+    <div id="user-logs" class="p-4"></div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-center text-white py-3 mt-5">
+    <p>© 2025 Emergency Response. All rights reserved.</p>
+    <button id="toggle-theme" class="btn btn-light">Toggle Dark Mode</button>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // User Authentication and Logs
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        db.collection("emergency_logs")
+          .where("userID", "==", user.uid)
+          .orderBy("timestamp", "desc")
+          .onSnapshot((snapshot) => {
+            const logsDiv = document.getElementById("user-logs");
+            logsDiv.innerHTML = "<h3>Your Emergency Actions:</h3>";
+            snapshot.forEach((doc) => {
+              const log = doc.data();
+              logsDiv.innerHTML += `
+                <div class="border p-2 mt-2 rounded bg-blue-100">
+                  <strong>${log.buttonType}</strong><br>
+                  <small>${new Date(log.timestamp).toLocaleString()}</small><br>
+                  📍 Location: (${log.location.lat.toFixed(5)}, ${log.location.lng.toFixed(5)})
+                </div>
+              `;
+            });
+          });
+      } else {
+        // User is not logged in
+        document.getElementById("user-logs").innerHTML = "<p>Please log in to view your emergency logs.</p>";
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

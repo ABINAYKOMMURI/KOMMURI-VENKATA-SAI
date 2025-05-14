@@ -1,0 +1,83 @@
+<!-- landing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      background-color: #000000;
+    }
+
+    .card-gradient {
+      background: linear-gradient(to bottom right, #8B0000, #000000);
+      color: white;
+      border: none;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-gradient h1 {
+      color: #ffffff;
+    }
+
+    .btn-custom {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .btn-user {
+      background-color: #3490dc;
+      color: white;
+    }
+
+    .btn-user:hover {
+      background-color: #2779bd;
+    }
+
+    .btn-admin {
+      background-color: #38a169;
+      color: white;
+    }
+
+    .btn-admin:hover {
+      background-color: #2f855a;
+    }
+
+    .logo {
+      height: 3rem;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center">
+
+  <div class="card-gradient max-w-lg w-full text-center">
+    <div class="text-center mb-3">
+      <img src="assets/logo.jpg" alt="Emergency Response Logo" class="logo" />
+    </div>
+    <h1 class="text-3xl font-bold mb-6">Welcome to Emergency Response Connect</h1>
+    
+    <div class="mb-4">
+      <button onclick="window.location.href='login.html'" class="btn-custom btn-user mb-4">
+        User Login
+      </button>
+    </div>
+    
+    <div>
+      <button onclick="window.location.href='admin-login.html'" class="btn-custom btn-admin">
+        Admin Login
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

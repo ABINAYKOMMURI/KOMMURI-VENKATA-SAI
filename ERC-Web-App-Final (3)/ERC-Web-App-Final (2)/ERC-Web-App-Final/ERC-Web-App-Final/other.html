@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Emergency Response - Other emergencies like fire, floods, and power outages.">
+  <title>Emergency Contacts | Emergency Response</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="manifest" href="manifest.json">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    /* Custom styles for button size and text centering */
+    .btn-custom {
+      width: 200px; /* Uniform button width */
+      text-align: center; /* Center text */
+      padding: 10px 20px; /* Adjust padding for better spacing */
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Emergency Navigation">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">Emergency Response</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="ambulance.html">Ambulance</a></li>
+          <li class="nav-item"><a class="nav-link" href="police.html">Police</a></li>
+          <li class="nav-item"><a class="nav-link" href="other.html">Other Emergencies</a></li>
+          <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="signup.html">signup</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">login</a></li>
+          <li class="nav-item"><a class="nav-link" href="first-aid.html">Fitst Aid</a></li>
+          <li class="nav-item"><a class="nav-link" href="landing.html">Adimn login</a></li>
+          <li class="nav-item"><button id="logout-btn" class="btn btn-outline-light">Logout</button></li>
+          
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container py-4">
+    <h1 class="mb-4">🚨 Emergency Contacts</h1>
+
+    <ul class="list-group">
+      <!-- National Emergency Number -->
+      <li class="list-group-item">
+        <i class="bi bi-phone me-2"></i>
+        <a href="tel:112">National Emergency Number - 112</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:112'">Call 112</button>
+      </li>
+
+      <!-- Fire -->
+      <li class="list-group-item">
+        <i class="bi bi-fire me-2 text-danger"></i>
+        <a href="tel:101">Fire - 101</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:101'">Call Fire</button>
+      </li>
+
+      <!-- Disaster Management Services -->
+      <li class="list-group-item">
+        <i class="bi bi-cloud-rain me-2 text-info"></i>
+        <a href="tel:105">Disaster Management Services </a>
+        <button class="btn btn-info btn-custom float-end" onclick="window.location.href='tel:108'">Call Disaster Services</button>
+      </li>
+
+      <!-- Women Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-gender-ambiguous me-2 text-warning"></i>
+        <a href="tel:1091">Women Helpline - 1091</a>
+        <button class="btn btn-warning btn-custom float-end" onclick="window.location.href='tel:1091'">Call Women Helpline</button>
+      </li>
+
+      <!-- Women Helpline - Domestic Abuse -->
+      <li class="list-group-item">
+        <i class="bi bi-shield-lock me-2 text-danger"></i>
+        <a href="tel:181">Women Helpline (Domestic Abuse) - 181</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:181'">Call Domestic Abuse Helpline</button>
+      </li>
+
+      <!-- Air Ambulance -->
+      <li class="list-group-item">
+        <i class="bi bi-airplane-engines me-2 text-secondary"></i>
+        <a href="tel:9540161344">Air Ambulance - 9540161344</a>
+        <button class="btn btn-secondary btn-custom float-end" onclick="window.location.href='tel:9540161344'">Call Air Ambulance</button>
+      </li>
+
+      <!-- Aids Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-heart me-2 text-danger"></i>
+        <a href="tel:1097">AIDS Helpline - 1097</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:1097'">Call Aids Helpline</button>
+      </li>
+
+      <!-- Anti Poison -->
+      <li class="list-group-item">
+        <i class="bi bi-x-octagon me-2 text-dark"></i>
+        <a href="tel:1066">Anti Poison (New Delhi) - 1066</a>
+        <button class="btn btn-dark btn-custom float-end" onclick="window.location.href='tel:1066'">Call Anti Poison</button>
+      </li>
+
+      <!-- Disaster Management (NDMA) -->
+      <li class="list-group-item">
+        <i class="bi bi-cloud-fog me-2 text-info"></i>
+        <a href="tel:1078">Disaster Management (NDMA) - 1078</a>
+        <button class="btn btn-info btn-custom float-end" onclick="window.location.href='tel:1078'">Call NDMA</button>
+      </li>
+
+      <!-- Earthquake / Flood / Disaster (NDRF) -->
+      <li class="list-group-item">
+        <i class="bi bi-globe me-2 text-primary"></i>
+        <a href="tel:01124363260">Earthquake / Flood / Disaster (NDRF) - 011-24363260</a>
+        <button class="btn btn-primary btn-custom float-end" onclick="window.location.href='tel:01124363260'">Call NDRF</button>
+      </li>
+
+      <!-- Railway Enquiry -->
+      <li class="list-group-item">
+        <i class="bi bi-train me-2 text-success"></i>
+        <a href="tel:139">Railway Enquiry - 139</a>
+        <button class="btn btn-success btn-custom float-end" onclick="window.location.href='tel:139'">Call Railway Enquiry</button>
+      </li>
+
+      <!-- Senior Citizen Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-person-bounding-box me-2 text-warning"></i>
+        <a href="tel:14567">Senior Citizen Helpline - 14567</a>
+        <button class="btn btn-warning btn-custom float-end" onclick="window.location.href='tel:14567'">Call Senior Citizen Helpline</button>
+      </li>
+
+      <!-- Road Accident Emergency Service -->
+      <li class="list-group-item">
+        <i class="bi bi-car-front me-2 text-danger"></i>
+        <a href="tel:1073">Road Accident Emergency - 1073</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:1073'">Call Road Accident Service</button>
+      </li>
+
+      <!-- Kisan Call Centre -->
+      <li class="list-group-item">
+        <i class="bi bi-telephone me-2 text-success"></i>
+        <a href="tel:18001801551">Kisan Call Centre - 18001801551</a>
+        <button class="btn btn-success btn-custom float-end" onclick="window.location.href='tel:18001801551'">Call Kisan Call Centre</button>
+      </li>
+
+      <!-- Relief Commissioner for Natural Calamities -->
+      <li class="list-group-item">
+        <i class="bi bi-house-door me-2 text-info"></i>
+        <a href="tel:1070">Relief Commissioner - 1070</a>
+        <button class="btn btn-info btn-custom float-end" onclick="window.location.href='tel:1070'">Call Relief Commissioner</button>
+      </li>
+
+      <!-- Children In Difficult Situation -->
+      <li class="list-group-item">
+        <i class="bi bi-child me-2 text-primary"></i>
+        <a href="tel:1098">Children In Difficult Situation - 1098</a>
+        <button class="btn btn-primary btn-custom float-end" onclick="window.location.href='tel:1098'">Call Children Helpline</button>
+      </li>
+
+      <!-- National Poisons Information Centre -->
+      <li class="list-group-item">
+        <i class="bi bi-x-circle me-2 text-danger"></i>
+        <a href="tel:1800116117">National Poisons Information Centre (AIIMS) - 1800116117</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:1800116117'">Call Poison Information Centre</button>
+      </li>
+
+      <!-- Tourist Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-geo-alt me-2 text-secondary"></i>
+        <a href="tel:1363">Tourist Helpline - 1363</a>
+        <button class="btn btn-secondary btn-custom float-end" onclick="window.location.href='tel:1363'">Call Tourist Helpline</button>
+      </li>
+
+      <!-- LPG Leak Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-fire me-2 text-danger"></i>
+        <a href="tel:1906">LPG Leak Helpline - 1906</a>
+        <button class="btn btn-danger btn-custom float-end" onclick="window.location.href='tel:1906'">Call LPG Leak Helpline</button>
+      </li>
+
+      <!-- Kiran Mental Health Helpline -->
+      <li class="list-group-item">
+        <i class="bi bi-emoji-sunglasses me-2 text-primary"></i>
+        <a href="tel:18005990019">Kiran Mental Health Helpline - 18005990019</a>
+        <button class="btn btn-primary btn-custom float-end" onclick="window.location.href='tel:18005990019'">Call Mental Health Helpline</button>
+      </li>
+    </ul>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-light text-center py-3">
+    <p>&copy; 2025 Emergency Response System | All Rights Reserved</p>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    // Logout function (if using localStorage/sessionStorage)
+    document.getElementById("logout-btn").addEventListener("click", () => {
+      // Example: Clear localStorage and redirect to login
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+
+    // Dark Mode toggle functionality
+    const toggleBtn = document.getElementById('toggle-theme');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('bg-dark');
+      document.body.classList.toggle('text-white');
+      toggleBtn.classList.toggle('btn-light');
+      toggleBtn.classList.toggle('btn-dark');
+
+    });
+  </script>
+  
+  <script>
+    // Handle SOS button press for Police
+    document.getElementsByClass('btn btn-primary btn-custom float-end').addEventListener('click', function() {
+      logSOSButtonPress('others');
+    });
+    
+    // Function to log SOS button press in localStorage
+    function logSOSButtonPress(emergencyType) {
+      const currentUser = localStorage.getItem('currentUser');
+      const users = JSON.parse(localStorage.getItem('users')) || {};
+      const user = users[currentUser];
+
+      if (user) {
+        // Collect SOS log details
+        const log = {
+          name: user.name,
+          phone: currentUser,
+          type: emergencyType,
+          time: new Date().toLocaleString()
+        };
+
+        // Retrieve existing logs from localStorage
+        const allLogs = JSON.parse(localStorage.getItem('sosLogs')) || {};
+        const userLogs = allLogs[currentUser] || [];
+
+        // Add the new log
+        userLogs.push(log);
+
+        // Save the updated logs back to localStorage
+        allLogs[currentUser] = userLogs;
+        localStorage.setItem('sosLogs', JSON.stringify(allLogs));
+
+        // Optionally, alert user or provide feedback
+        alert(`${emergencyType} SOS button pressed!`);
+      }
+    }
+  </script>
+</body>
+</html>
